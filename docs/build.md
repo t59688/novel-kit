@@ -3,8 +3,8 @@
 ## 构建命令
 
 ```bash
-python build.py cursor linux   # Linux 版本
-python build.py cursor win     # Windows 版本
+python build_novelkit.py cursor linux   # Linux 版本
+python build_novelkit.py cursor win     # Windows 版本
 ```
 
 构建产物位于 `dist/cursor-{platform}/` 目录。
@@ -60,7 +60,7 @@ python build.py cursor win     # Windows 版本
 }
 ```
 
-**注意**：此配置文件仅用于构建脚本（`build.py`）和 CI/CD（GitHub Actions）。CLI 工具面向用户，不依赖此配置文件。
+**注意**：此配置文件仅用于构建脚本（`build_novelkit.py`）和 CI/CD（GitHub Actions）。CLI 工具面向用户，不依赖此配置文件。
 
 ## GitHub Actions 自动构建
 

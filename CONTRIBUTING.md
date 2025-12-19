@@ -13,7 +13,7 @@ novel-kit/
 │   └── powershell/   # Windows 脚本（8个）
 ├── memory/            # 项目配置
 ├── src/novel_kit_cli/ # CLI 工具
-└── build.py           # 构建脚本
+└── build_novelkit.py  # 构建脚本
 ```
 
 ## 开发流程
@@ -83,7 +83,7 @@ $ARGUMENTS
 
 ```bash
 # 构建测试
-python build.py cursor linux
+python build_novelkit.py cursor linux
 
 # 初始化测试项目
 novel-kit init test-project --ai cursor
@@ -164,11 +164,11 @@ $REPO_ROOT = Find-RepoRoot (Get-Location)
 
 ```bash
 # 构建单个 AI 环境
-python build.py cursor linux
-python build.py cursor win
+python build_novelkit.py cursor linux
+python build_novelkit.py cursor win
 
 # 构建所有支持的 AI 环境
-python build.py all
+python build_novelkit.py all
 ```
 
 ### 发布流程

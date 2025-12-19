@@ -122,5 +122,5 @@
 2. 定义 YAML front matter 和脚本调用
 3. 编写交互流程
 4. 如需新脚本操作，添加对应脚本
-5. 构建测试：`python build.py cursor linux`
+5. 构建测试：`python build_novelkit.py cursor linux`
 6. 测试命令：`novel-kit init test-project`

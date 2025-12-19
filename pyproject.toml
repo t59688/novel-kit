@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novel-kit-cli"
-version = "0.1.0"
+version = "0.0.2"
 description = "NovelKit CLI - AI-Assisted Novel Writing Toolkit"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -23,12 +23,10 @@ novel-kit = "novel_kit_cli:main"
 packages = ["src/novel_kit_cli"]
 
 [tool.hatch.build.targets.sdist]
+# 源码分发包只需要包含 CLI 代码
+# commands、templates、scripts、memory 是用于构建 NovelKit 发布包的源文件
+# CLI 不需要这些文件，它从构建好的发布包或 GitHub Release 下载
 include = [
     "/src",
-    "/commands",
-    "/templates",
-    "/scripts",
-    "/memory",
-    "/build.py",
     "/README.md",
 ]

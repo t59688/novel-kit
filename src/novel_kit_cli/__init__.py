@@ -77,7 +77,7 @@ AI_ENV_CONFIG: Dict[str, Dict[str, str]] = {
     # TODO: 添加更多 AI 环境支持时：
     # 1. 更新 build-config.json（用于构建）
     # 2. 在这里添加配置（用于 CLI）
-    # 3. 在 build.py 中添加构建函数
+    # 3. 在 build_novelkit.py 中添加构建函数
     # "claude": {
     #     "name": "Claude Code",
     #     "description": "Claude Code 集成",
@@ -487,7 +487,7 @@ def init_project(
     """
     if not dist_dir.exists():
         console.print(f"[red]错误:[/red] 找不到构建产物目录: {dist_dir}")
-        console.print("[yellow]提示:[/yellow] 请先运行构建脚本: python build.py cursor {platform}")
+        console.print("[yellow]提示:[/yellow] 请先运行构建脚本: python build_novelkit.py cursor {platform}")
         return False
     
     # 检查目标目录
@@ -648,7 +648,7 @@ def init(
     
     if not dist_dir:
         console.print("[red]错误:[/red] 找不到 NovelKit 构建产物")
-        console.print(f"[yellow]提示:[/yellow] 请先运行: [cyan]python build.py {selected_ai} {PLATFORM}[/cyan]")
+        console.print(f"[yellow]提示:[/yellow] 请先运行: [cyan]python build_novelkit.py {selected_ai} {PLATFORM}[/cyan]")
         console.print("[dim]或等待远程下载功能实现[/dim]")
         raise typer.Exit(1)
     
@@ -703,9 +703,6 @@ def init(
     steps_panel = Panel("\n".join(steps_lines), title="下一步", border_style="cyan", padding=(1, 2))
     console.print(steps_panel)
     
-    # TODO: 远程仓库地址
-    console.print()
-    console.print("[dim]提示: 远程仓库功能待实现[/dim]")
 
 
 @app.command()
