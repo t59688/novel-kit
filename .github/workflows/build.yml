@@ -1,0 +1,94 @@
+name: Build Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'commands/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'memory/**'
+      - 'build.py'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        platform: [linux, win]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Get supported AI environments
+        id: get_ais
+        run: |
+          # 从 build-config.json 读取配置
+          python << 'PYEOF'
+          import json
+          import os
+          
+          with open('build-config.json', 'r') as f:
+              config = json.load(f)
+          
+          ais = ' '.join(sorted(config.get('supported_ais', ['cursor'])))
+          
+          output_file = os.environ.get('GITHUB_OUTPUT', '/dev/stdout')
+          with open(output_file, 'a') as f:
+              f.write(f"ais={ais}\n")
+          
+          print(f"Supported AIs: {ais}")
+          PYEOF
+
+      - name: Build all packages
+        run: |
+          AIS="${{ steps.get_ais.outputs.ais }}"
+          PLATFORM="${{ matrix.platform }}"
+          
+          echo "Building for AI environments: ${AIS}"
+          echo "Platform: ${PLATFORM}"
+          
+          for ai in ${AIS}; do
+            echo "Building ${ai}-${PLATFORM}..."
+            python build.py ${ai} ${PLATFORM}
+          done
+          
+      - name: Verify build output
+        run: |
+          AIS="${{ steps.get_ais.outputs.ais }}"
+          PLATFORM="${{ matrix.platform }}"
+          
+          for ai in ${AIS}; do
+            DIST_DIR="dist/${ai}-${PLATFORM}"
+            if [ -d "${DIST_DIR}/.novelkit" ]; then
+              echo "✓ ${ai}-${PLATFORM}: .novelkit directory exists"
+            else
+              echo "✗ ${ai}-${PLATFORM}: .novelkit directory missing"
+              exit 1
+            fi
+            
+            # 检查 AI 环境特定的目录（如 .cursor）
+            AI_FOLDER=$(python -c "import sys; sys.path.insert(0, 'src/novel_kit_cli'); from __init__ import AI_ENV_CONFIG; print(AI_ENV_CONFIG.get('${ai}', {}).get('folder', ''))")
+            if [ -n "${AI_FOLDER}" ] && [ -d "${DIST_DIR}/${AI_FOLDER}/commands" ]; then
+              echo "✓ ${ai}-${PLATFORM}: ${AI_FOLDER}/commands directory exists"
+            else
+              echo "✗ ${ai}-${PLATFORM}: ${AI_FOLDER}/commands directory missing"
+              exit 1
+            fi
+          done
+          
+          echo "✓ All builds verified successfully"
